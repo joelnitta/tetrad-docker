@@ -2,7 +2,7 @@
 
 Docker image for [tetrad](https://github.com/eaton-lab/tetrad)
 
-# Usage
+## Usage
 
 ```
 docker run --rm joelnitta/tetrad:latest tetrad --help
