@@ -1,6 +1,6 @@
 # tetrad-docker
 
-Docker image for [tetrad](https://github.com/eaton-lab/tetrad)
+[Docker image](https://hub.docker.com/repository/docker/joelnitta/tetrad/) for [tetrad](https://github.com/eaton-lab/tetrad)
 
 ## Usage
 
