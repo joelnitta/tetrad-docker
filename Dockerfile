@@ -1,21 +1,22 @@
-# Dockerfile for tetrad
-# https://github.com/eaton-lab/tetrad
+FROM python:3
 
-FROM continuumio/miniconda3:4.9.2
+WORKDIR /usr/src/
 
-MAINTAINER Joel Nitta joelnitta@gmail.com
+# copy patch to fix https://github.com/eaton-lab/tetrad/issues/5
+COPY snps-hdf5-patch .
 
-# Build tetrad conda environment
-RUN conda update --name base --channel defaults conda && \
-    conda create -n tetrad -c eaton-lab -c conda-forge tetrad=0.9.13 && \
-    conda clean --all --yes
-    
-# Make wrapper script for tetrad
-ENV TOOLNAME tetrad
-RUN echo '#!/bin/bash' >> /usr/local/bin/$TOOLNAME && \
-  echo "source /opt/conda/etc/profile.d/conda.sh" >> /usr/local/bin/$TOOLNAME && \
-  echo "conda activate tetrad" >> /usr/local/bin/$TOOLNAME  && \
-  echo "$TOOLNAME \"\$@\"" >> /usr/local/bin/$TOOLNAME  && \
-  chmod 755 /usr/local/bin/$TOOLNAME
+# clone repo, checkout most recent version, apply patch
+ENV VERSION 0.9.14
+
+RUN git clone https://github.com/eaton-lab/tetrad && \
+  cd tetrad && \
+  git fetch --tags && \
+  git checkout tags/$VERSION -b patch && \
+  cd tetrad && \
+  git apply /usr/src/snps-hdf5-patch
+
+# install patched app
+RUN cd tetrad && \
+  pip install -e .
   
 CMD ["tetrad"]
